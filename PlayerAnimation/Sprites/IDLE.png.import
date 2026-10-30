@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgj86xrjg4fw2"
-path="res://.godot/imported/Tileset.png-73eaccbc87ae4f551d534c239941af0c.ctex"
+uid="uid://df0gpxmkpigrf"
+path="res://.godot/imported/IDLE.png-65065c1c1b3e113ddbf151b70057c6af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Mapa/Tileset.png"
-dest_files=["res://.godot/imported/Tileset.png-73eaccbc87ae4f551d534c239941af0c.ctex"]
+source_file="res://PlayerAnimation/Sprites/IDLE.png"
+dest_files=["res://.godot/imported/IDLE.png-65065c1c1b3e113ddbf151b70057c6af.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://clrfjr6fmorr3"
-path="res://.godot/imported/HURT.png-4a1ea16bd43f262bc9eb203a2e42f33b.ctex"
+uid="uid://bnltmpk1r8gbr"
+path="res://.godot/imported/RUN.png-b657b19eb56d8883306e867069d6bb57.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Postac/Sprites/HURT.png"
-dest_files=["res://.godot/imported/HURT.png-4a1ea16bd43f262bc9eb203a2e42f33b.ctex"]
+source_file="res://PlayerAnimation/Sprites/RUN.png"
+dest_files=["res://.godot/imported/RUN.png-b657b19eb56d8883306e867069d6bb57.ctex"]
 
 [params]
 

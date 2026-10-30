@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dqucnsgt4aefg"
-path="res://.godot/imported/Preview.png-5fbc80b82bb78442ff08f0ba77b96687.ctex"
+uid="uid://8fmc4nn524sf"
+path="res://.godot/imported/Zombie_Default_Attack1.png-5b6a550eb791ebea46dd9ed418760b9e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Postac/Preview.png"
-dest_files=["res://.godot/imported/Preview.png-5fbc80b82bb78442ff08f0ba77b96687.ctex"]
+source_file="res://EnemiesAnimation/Zombie_Default_Attack1.png"
+dest_files=["res://.godot/imported/Zombie_Default_Attack1.png-5b6a550eb791ebea46dd9ed418760b9e.ctex"]
 
 [params]
 

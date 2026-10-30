@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnltmpk1r8gbr"
-path="res://.godot/imported/RUN.png-e87260bde06e4e245c79ca672669b730.ctex"
+uid="uid://bghsqrfksovy8"
+path="res://.godot/imported/Decors.png-29ac697e181a425fd5a6a49630e7530d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Postac/Sprites/RUN.png"
-dest_files=["res://.godot/imported/RUN.png-e87260bde06e4e245c79ca672669b730.ctex"]
+source_file="res://Map/Decors.png"
+dest_files=["res://.godot/imported/Decors.png-29ac697e181a425fd5a6a49630e7530d.ctex"]
 
 [params]
 

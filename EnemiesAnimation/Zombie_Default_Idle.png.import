@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bghsqrfksovy8"
-path="res://.godot/imported/Decors.png-d245f0c4f3f85e8380904eb2b283f99b.ctex"
+uid="uid://o6ryxt2vbf1t"
+path="res://.godot/imported/Zombie_Default_Idle.png-cb6be738702bd74144f652ef0865121d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Mapa/Decors.png"
-dest_files=["res://.godot/imported/Decors.png-d245f0c4f3f85e8380904eb2b283f99b.ctex"]
+source_file="res://EnemiesAnimation/Zombie_Default_Idle.png"
+dest_files=["res://.godot/imported/Zombie_Default_Idle.png-cb6be738702bd74144f652ef0865121d.ctex"]
 
 [params]
 
