@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://df0gpxmkpigrf"
-path="res://.godot/imported/IDLE.png-8a165c96dd9164e8e5d73a6d9350eba4.ctex"
+uid="uid://bs00t4md7wmj2"
+path="res://.godot/imported/Zombie_Default_Walk.png-83d2779196b504bc8eeaa440e5962651.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Postac/Sprites/IDLE.png"
-dest_files=["res://.godot/imported/IDLE.png-8a165c96dd9164e8e5d73a6d9350eba4.ctex"]
+source_file="res://EnemiesAnimation/Zombie_Default_Walk.png"
+dest_files=["res://.godot/imported/Zombie_Default_Walk.png-83d2779196b504bc8eeaa440e5962651.ctex"]
 
 [params]
 

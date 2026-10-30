@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qqdbfd1b8mfo"
-path="res://.godot/imported/BG2.png-97f394faa86fba24ddffd0c82b6f9054.ctex"
+uid="uid://c1j0nwxstm75e"
+path="res://.godot/imported/Zombie_Default_Dead.png-3dd57d26e3d9a5ff9c475c1b222bb42f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Mapa/BG2.png"
-dest_files=["res://.godot/imported/BG2.png-97f394faa86fba24ddffd0c82b6f9054.ctex"]
+source_file="res://EnemiesAnimation/Zombie_Default_Dead.png"
+dest_files=["res://.godot/imported/Zombie_Default_Dead.png-3dd57d26e3d9a5ff9c475c1b222bb42f.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dg46wwyk8bdph"
-path="res://.godot/imported/ExampleTiles.png-983663f3827926e2b1f79819cc4f5c08.ctex"
+uid="uid://fqppawtjsduy"
+path="res://.godot/imported/Zombie_Default_Hurt.png-63563b0e425b9cf3092a8d24d280fd1d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Mapa/ExampleTiles.png"
-dest_files=["res://.godot/imported/ExampleTiles.png-983663f3827926e2b1f79819cc4f5c08.ctex"]
+source_file="res://EnemiesAnimation/Zombie_Default_Hurt.png"
+dest_files=["res://.godot/imported/Zombie_Default_Hurt.png-63563b0e425b9cf3092a8d24d280fd1d.ctex"]
 
 [params]
 

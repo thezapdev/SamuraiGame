@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1j0nwxstm75e"
-path="res://.godot/imported/Zombie_Default_Dead.png-72d836724d6ec289201fd3266ea88f85.ctex"
+uid="uid://bgj86xrjg4fw2"
+path="res://.godot/imported/Tileset.png-8a3523be96743cba0febcec13647e981.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Zombie_Default_Dead.png"
-dest_files=["res://.godot/imported/Zombie_Default_Dead.png-72d836724d6ec289201fd3266ea88f85.ctex"]
+source_file="res://Map/Tileset.png"
+dest_files=["res://.godot/imported/Tileset.png-8a3523be96743cba0febcec13647e981.ctex"]
 
 [params]
 

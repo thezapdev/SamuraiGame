@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wwrwi1cykfda"
-path="res://.godot/imported/BG3.png-921e853c9438172949e921b9b7a30235.ctex"
+uid="uid://clrfjr6fmorr3"
+path="res://.godot/imported/HURT.png-2f015794b1c94acb64d5d36680bc2be2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Mapa/BG3.png"
-dest_files=["res://.godot/imported/BG3.png-921e853c9438172949e921b9b7a30235.ctex"]
+source_file="res://PlayerAnimation/Sprites/HURT.png"
+dest_files=["res://.godot/imported/HURT.png-2f015794b1c94acb64d5d36680bc2be2.ctex"]
 
 [params]
 

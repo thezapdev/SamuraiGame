@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bs00t4md7wmj2"
-path="res://.godot/imported/Zombie_Default_Walk.png-b97305b26a2cf807264ddb5cccc9248d.ctex"
+uid="uid://wwrwi1cykfda"
+path="res://.godot/imported/BG3.png-891bc96a8ae99e2ff944785e5427a5a5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Zombie_Default_Walk.png"
-dest_files=["res://.godot/imported/Zombie_Default_Walk.png-b97305b26a2cf807264ddb5cccc9248d.ctex"]
+source_file="res://Map/BG3.png"
+dest_files=["res://.godot/imported/BG3.png-891bc96a8ae99e2ff944785e5427a5a5.ctex"]
 
 [params]
 
