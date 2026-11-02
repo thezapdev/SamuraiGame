@@ -5,11 +5,9 @@ public partial class HealthBarUI :  ProgressBar
 {
 	[Export] private HealthComponent _healthComponent;
 
-
 	public override void _Ready()    {
 
 		CallDeferred(nameof(InitializeHealth));
-
 	}   
 
 	private void OnHealthChanged(int currentHealth,int maxHealth)

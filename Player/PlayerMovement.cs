@@ -1,30 +1,45 @@
-using System;
+
 using Godot;
 
 public partial class PlayerMovement : Node
 {
-		[Export] private float _speed { get; set; } = 200.0f;
-		
-		private CharacterBody2D _body;
+	[Export] private float _speed = 200.0f;
 
-		public void Setup(CharacterBody2D body)
+	private IPlayerDirectionManagement _direction;
+	private CharacterBody2D _body;
+
+	public void Setup(
+		CharacterBody2D body,
+		IPlayerDirectionManagement direction)
 	{
 		_body = body;
+		_direction = direction;
 	}
-public void HandleMovement(double delta)
+
+	public void HandleMovement(double delta)
 	{
 		Vector2 velocity = _body.Velocity;
-		float direction = Input.GetAxis("ui_left","ui_right");
 
-		if(Math.Abs(direction) > 0.001f)
+		float input = Input.GetAxis("ui_left", "ui_right");
+
+		if (Mathf.Abs(input) > 0.001f)
 		{
-			velocity.X = direction*_speed;
+			velocity.X = input * _speed;
+
+			if (input > 0)
+				_direction.SetFrontDirection();
+			else
+				_direction.SetBackDirection();
 		}
 		else
 		{
-			velocity.X = Mathf.MoveToward(_body.Velocity.X,0,_speed);
+			velocity.X = Mathf.MoveToward(
+				velocity.X,
+				0,
+				_speed * (float)delta
+			);
 		}
+
 		_body.Velocity = velocity;
 	}
-	
 }
