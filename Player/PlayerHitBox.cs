@@ -2,20 +2,22 @@ using Godot;
 
 public partial class PlayerHitBox : Node
 {
+	private Area2D _hitbox;
 	private CollisionShape2D _shape;
 	private PlayerDetails _details;
-	private float _baseX;
+	private Vector2 _baseShapePosition;
 
 	public void Setup(Area2D area, CollisionShape2D shape, PlayerDetails details)
 	{
+		_hitbox = area;
 		_shape = shape;
 		_details = details;
-		_baseX = shape.Position.X; // bez Abs: bierzemy wartość z edytora taką, jaka jest
+		_baseShapePosition = shape.Position;
 	}
 
 	public void HandleHitbox()
 	{
 		float sign = _details.HasFrontDirection ? 1f : -1f;
-		_shape.Position = new Vector2(_baseX * sign, _shape.Position.Y);
+		_shape.Position = new Vector2(Mathf.Abs(_baseShapePosition.X) * sign, _baseShapePosition.Y);
 	}
 }

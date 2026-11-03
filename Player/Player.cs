@@ -5,6 +5,8 @@ public partial class Player : CharacterBody2D
 	[Export] private PlayerJump _jumpComponent;
 	[Export] private PlayerMovement _movementComponent;
 
+	private StatsManager _statsmanager;
+	private LevelSystem _levelsystem;
 	private PlayerAnimation _animation;
 	private PlayerAttack _attack;
 	private PlayerExp _expComponent;
@@ -13,6 +15,8 @@ public partial class Player : CharacterBody2D
 
 	public override void _Ready()
 	{
+		_levelsystem =  GetNode<LevelSystem>("LevelSystem");
+		_statsmanager =  GetNode<StatsManager>("StatsManager");
 		_expComponent = GetNode<PlayerExp>("PlayerExp");
 
 		_animation = GetNode<PlayerAnimation>("PlayerAnimation");

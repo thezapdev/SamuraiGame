@@ -14,7 +14,6 @@ public partial class Enemy : CharacterBody2D
 	{
 		_enemySprite = GetNode<AnimatedSprite2D>("EnemySprite2D");
 
-		// Pobieramy referencję do gracza
 		_player = GetTree().GetFirstNodeInGroup("Player") as Player;
 
 		if (_player == null)
@@ -49,7 +48,6 @@ public partial class Enemy : CharacterBody2D
 
 		_isDead = true;
 
-		// Przyznajemy EXP graczowi
 		_player?.KillEnemy(this);
 
 		_enemySprite.Play("Dead");

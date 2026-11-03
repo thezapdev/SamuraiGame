@@ -2,7 +2,8 @@ using Godot;
 
 public partial class PlayerAttack : Node
 {
-	[Export] private int _damage = 10;
+	private AttackSystem _attacksystem;
+	private CriticalSystem _criticalSystem;
 
 	public bool IsAttacking { get; private set; }
 
@@ -11,6 +12,17 @@ public partial class PlayerAttack : Node
 	private Area2D _hitbox;
 	private CollisionShape2D _hitboxShape;
 
+
+
+
+	public override void _Ready()
+	{
+		_attacksystem = new AttackSystem(10, 2.5f);
+		_attacksystem.UpdateStats(1);
+		_criticalSystem = new CriticalSystem();
+
+	}
+
 	public void Setup(CharacterBody2D body, AnimatedSprite2D animatedSprite, Area2D hitbox, CollisionShape2D hitboxShape)
 	{
 		_body = body;
@@ -18,10 +30,14 @@ public partial class PlayerAttack : Node
 		_hitbox = hitbox;
 		_hitboxShape = hitboxShape;
 
+
 		_hitbox.BodyEntered += OnHitboxEntered;
 		_animatedSprite.AnimationFinished += OnAnimationFinished;
 	}
-
+	public void OnLevelChanged(int newLevel)
+	{
+		_attacksystem.UpdateStats(newLevel);
+	}
 	public void HandleAttack()
 	{
 		if (IsAttacking) return;
@@ -45,6 +61,9 @@ public partial class PlayerAttack : Node
 	private void OnHitboxEntered(Node2D body)
 	{
 		if (body is Enemy enemy)
-			enemy.TakeDamage(_damage);
+		{
+			int damage = _criticalSystem.ApplyCrit(_attacksystem.CurrentDamage);
+			enemy.TakeDamage(damage);
+		}
 	}
 }
