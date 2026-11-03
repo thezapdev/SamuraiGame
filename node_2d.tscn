@@ -25,6 +25,7 @@
 [ext_resource type="Script" uid="uid://c85kxpuyc4uja" path="res://Enemies/EnemyMovement.cs" id="22_e8dv2"]
 [ext_resource type="Script" uid="uid://bffem44k3pet7" path="res://UI/ExpBar.cs" id="23_e8dv2"]
 [ext_resource type="Script" uid="uid://os8vpadahs8n" path="res://Components/LevelSystem.cs" id="25_gt76g"]
+[ext_resource type="Script" uid="uid://camjs30vr8i46" path="res://Components/StatsManager.cs" id="26_gt76g"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0e48y"]
 texture = ExtResource("1_wtcfe")
@@ -1029,6 +1030,14 @@ script = ExtResource("5_rj586")
 _jumpComponent = NodePath("PlayerJumpNode")
 _movementComponent = NodePath("PlayerMovementNode")
 
+[node name="StatsManager" type="Node" parent="Player" unique_id=807471342]
+script = ExtResource("26_gt76g")
+
+[node name="LevelSystem" type="Node" parent="Player" unique_id=1660891438 node_paths=PackedStringArray("_statManager", "_attackPlayer")]
+script = ExtResource("25_gt76g")
+_statManager = NodePath("../StatsManager")
+_attackPlayer = NodePath("../PlayerAttack")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=2025178200]
 position = Vector2(-196, 765)
 sprite_frames = SubResource("SpriteFrames_omuqt")
@@ -1088,6 +1097,7 @@ _healthComponent = NodePath("../HealthComponent")
 [node name="Enemy" type="CharacterBody2D" parent="." unique_id=1711839486 node_paths=PackedStringArray("_healthComponent")]
 script = ExtResource("9_4d7sh")
 _healthComponent = NodePath("EnemySprite2D/HealthComponent2")
+ExpReward = 60
 
 [node name="EnemySprite2D" type="AnimatedSprite2D" parent="Enemy" unique_id=1720521100]
 position = Vector2(336, 785)
@@ -1130,6 +1140,7 @@ _healthComponent = NodePath("../EnemySprite2D/HealthComponent2")
 [node name="Enemy2" type="CharacterBody2D" parent="." unique_id=903421753 node_paths=PackedStringArray("_healthComponent")]
 script = ExtResource("9_4d7sh")
 _healthComponent = NodePath("EnemySprite2D/HealthComponent2")
+ExpReward = 60
 
 [node name="EnemySprite2D" type="AnimatedSprite2D" parent="Enemy2" unique_id=431432889]
 position = Vector2(485, 784)
@@ -1169,12 +1180,182 @@ show_percentage = false
 script = ExtResource("14_fs4d3")
 _healthComponent = NodePath("../EnemySprite2D/HealthComponent2")
 
+[node name="Enemy3" type="CharacterBody2D" parent="." unique_id=1267904850 node_paths=PackedStringArray("_healthComponent")]
+script = ExtResource("9_4d7sh")
+_healthComponent = NodePath("EnemySprite2D/HealthComponent2")
+ExpReward = 120
+
+[node name="EnemySprite2D" type="AnimatedSprite2D" parent="Enemy3" unique_id=30696175]
+position = Vector2(570, 782)
+scale = Vector2(1.2031251, 1.2148441)
+sprite_frames = SubResource("SpriteFrames_sbcm3")
+animation = &"Idle"
+
+[node name="HealthComponent2" type="Node" parent="Enemy3/EnemySprite2D" unique_id=722552918]
+script = ExtResource("13_rjqkl")
+_maxHealth = 50
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy3" unique_id=841129293]
+position = Vector2(571, 784)
+shape = SubResource("RectangleShape2D_sbcm3")
+
+[node name="EnemyMovement" type="Node" parent="Enemy3" unique_id=1232545062]
+script = ExtResource("22_e8dv2")
+
+[node name="EnemyCombat" type="Node" parent="Enemy3" unique_id=1369001158]
+script = ExtResource("21_ei405")
+
+[node name="AttackTimer" type="Timer" parent="Enemy3" unique_id=462543550]
+
+[node name="HitboxArea" type="Area2D" parent="Enemy3" unique_id=1201933007]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy3/HitboxArea" unique_id=650220897]
+position = Vector2(314, 787.5)
+shape = SubResource("RectangleShape2D_ibsea")
+debug_color = Color(0.62224925, 0.53383017, 0, 0.41960785)
+
+[node name="ProgressBar" type="ProgressBar" parent="Enemy3" unique_id=1693327830 node_paths=PackedStringArray("_healthComponent")]
+offset_left = 539.0
+offset_top = 744.0
+offset_right = 633.0
+offset_bottom = 768.0
+show_percentage = false
+script = ExtResource("14_fs4d3")
+_healthComponent = NodePath("../EnemySprite2D/HealthComponent2")
+
+[node name="Enemy4" type="CharacterBody2D" parent="." unique_id=1942313305 node_paths=PackedStringArray("_healthComponent")]
+script = ExtResource("9_4d7sh")
+_healthComponent = NodePath("EnemySprite2D/HealthComponent2")
+ExpReward = 100
+
+[node name="EnemySprite2D" type="AnimatedSprite2D" parent="Enemy4" unique_id=1199629326]
+position = Vector2(686.00006, 781)
+scale = Vector2(1.2031251, 1.2148441)
+sprite_frames = SubResource("SpriteFrames_sbcm3")
+animation = &"Idle"
+
+[node name="HealthComponent2" type="Node" parent="Enemy4/EnemySprite2D" unique_id=1565309618]
+script = ExtResource("13_rjqkl")
+_maxHealth = 50
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy4" unique_id=2056739175]
+position = Vector2(687, 783)
+shape = SubResource("RectangleShape2D_sbcm3")
+
+[node name="EnemyMovement" type="Node" parent="Enemy4" unique_id=1854611256]
+script = ExtResource("22_e8dv2")
+
+[node name="EnemyCombat" type="Node" parent="Enemy4" unique_id=1733389909]
+script = ExtResource("21_ei405")
+
+[node name="AttackTimer" type="Timer" parent="Enemy4" unique_id=1804699658]
+
+[node name="HitboxArea" type="Area2D" parent="Enemy4" unique_id=60243424]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy4/HitboxArea" unique_id=750029405]
+position = Vector2(314, 787.5)
+shape = SubResource("RectangleShape2D_ibsea")
+debug_color = Color(0.62224925, 0.53383017, 0, 0.41960785)
+
+[node name="ProgressBar" type="ProgressBar" parent="Enemy4" unique_id=1655312031 node_paths=PackedStringArray("_healthComponent")]
+offset_left = 643.0
+offset_top = 743.0
+offset_right = 737.0
+offset_bottom = 767.0
+show_percentage = false
+script = ExtResource("14_fs4d3")
+_healthComponent = NodePath("../EnemySprite2D/HealthComponent2")
+
+[node name="Enemy5" type="CharacterBody2D" parent="." unique_id=181582759 node_paths=PackedStringArray("_healthComponent")]
+script = ExtResource("9_4d7sh")
+_healthComponent = NodePath("EnemySprite2D/HealthComponent2")
+ExpReward = 100
+
+[node name="EnemySprite2D" type="AnimatedSprite2D" parent="Enemy5" unique_id=1605556872]
+position = Vector2(783, 780)
+scale = Vector2(1.2031251, 1.2148441)
+sprite_frames = SubResource("SpriteFrames_sbcm3")
+animation = &"Idle"
+
+[node name="HealthComponent2" type="Node" parent="Enemy5/EnemySprite2D" unique_id=216698153]
+script = ExtResource("13_rjqkl")
+_maxHealth = 50
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy5" unique_id=914876318]
+position = Vector2(784, 781)
+shape = SubResource("RectangleShape2D_sbcm3")
+
+[node name="EnemyMovement" type="Node" parent="Enemy5" unique_id=1474516453]
+script = ExtResource("22_e8dv2")
+
+[node name="EnemyCombat" type="Node" parent="Enemy5" unique_id=724817079]
+script = ExtResource("21_ei405")
+
+[node name="AttackTimer" type="Timer" parent="Enemy5" unique_id=2147353419]
+
+[node name="HitboxArea" type="Area2D" parent="Enemy5" unique_id=1908549067]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy5/HitboxArea" unique_id=415055725]
+position = Vector2(314, 787.5)
+shape = SubResource("RectangleShape2D_ibsea")
+debug_color = Color(0.62224925, 0.53383017, 0, 0.41960785)
+
+[node name="ProgressBar" type="ProgressBar" parent="Enemy5" unique_id=439118635 node_paths=PackedStringArray("_healthComponent")]
+offset_left = 747.0
+offset_top = 740.0
+offset_right = 841.0
+offset_bottom = 764.0
+show_percentage = false
+script = ExtResource("14_fs4d3")
+_healthComponent = NodePath("../EnemySprite2D/HealthComponent2")
+
+[node name="Enemy6" type="CharacterBody2D" parent="." unique_id=983161505 node_paths=PackedStringArray("_healthComponent")]
+script = ExtResource("9_4d7sh")
+_healthComponent = NodePath("EnemySprite2D/HealthComponent2")
+ExpReward = 100
+
+[node name="EnemySprite2D" type="AnimatedSprite2D" parent="Enemy6" unique_id=2095588619]
+position = Vector2(883.00006, 778)
+scale = Vector2(1.2031251, 1.2148441)
+sprite_frames = SubResource("SpriteFrames_sbcm3")
+animation = &"Idle"
+
+[node name="HealthComponent2" type="Node" parent="Enemy6/EnemySprite2D" unique_id=1559936457]
+script = ExtResource("13_rjqkl")
+_maxHealth = 50
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy6" unique_id=1240059125]
+position = Vector2(882, 779)
+shape = SubResource("RectangleShape2D_sbcm3")
+
+[node name="EnemyMovement" type="Node" parent="Enemy6" unique_id=1402623126]
+script = ExtResource("22_e8dv2")
+
+[node name="EnemyCombat" type="Node" parent="Enemy6" unique_id=1490443467]
+script = ExtResource("21_ei405")
+
+[node name="AttackTimer" type="Timer" parent="Enemy6" unique_id=146026094]
+
+[node name="HitboxArea" type="Area2D" parent="Enemy6" unique_id=137820249]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy6/HitboxArea" unique_id=1869862052]
+position = Vector2(314, 787.5)
+shape = SubResource("RectangleShape2D_ibsea")
+debug_color = Color(0.62224925, 0.53383017, 0, 0.41960785)
+
+[node name="ProgressBar" type="ProgressBar" parent="Enemy6" unique_id=1336789482 node_paths=PackedStringArray("_healthComponent")]
+offset_left = 846.0
+offset_top = 735.0
+offset_right = 940.0
+offset_bottom = 759.0
+show_percentage = false
+script = ExtResource("14_fs4d3")
+_healthComponent = NodePath("../EnemySprite2D/HealthComponent2")
+
 [node name="ExpBar" type="ProgressBar" parent="." unique_id=117527798]
 offset_left = -401.0
 offset_top = 284.0
 offset_right = -175.0
 offset_bottom = 331.0
+show_percentage = false
 script = ExtResource("23_e8dv2")
-
-[node name="LevelSystem" type="Node" parent="." unique_id=1660891438]
-script = ExtResource("25_gt76g")

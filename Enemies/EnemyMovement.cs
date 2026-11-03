@@ -7,7 +7,6 @@ public partial class EnemyMovement : Node
 
 	public override void _Ready()
 	{
-		// Pobieramy rodzica (główny węzeł CharacterBody2D)
 		_body = GetParent<CharacterBody2D>();
 	}
 
