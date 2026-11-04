@@ -1,12 +1,12 @@
-
 using Godot;
 
 public partial class PlayerMovement : Node
 {
 	[Export] private float _speed = 200.0f;
+	[Export] private float _deceleration = 600.0f;
 
-	private IPlayerDirectionManagement _direction;
 	private CharacterBody2D _body;
+	private IPlayerDirectionManagement _direction;
 
 	public void Setup(
 		CharacterBody2D body,
@@ -33,10 +33,11 @@ public partial class PlayerMovement : Node
 		}
 		else
 		{
+			// Hamowanie używa osobnej wartości, nie _speed – postać szybciej staje w miejscu
 			velocity.X = Mathf.MoveToward(
 				velocity.X,
 				0,
-				_speed * (float)delta
+				_deceleration * (float)delta
 			);
 		}
 
