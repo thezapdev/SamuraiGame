@@ -1,4 +1,4 @@
-using Godot;
+// using Godot;  ← można usunąć
 
 public partial class AttackSystem
 {
@@ -6,7 +6,6 @@ public partial class AttackSystem
     private readonly float _damagePerLevel;
 
     public int CurrentDamage { get; private set; }
-
 
     public AttackSystem(int baseDamage, float damagePerLevel)
     {

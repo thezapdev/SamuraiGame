@@ -2,22 +2,29 @@ using Godot;
 
 public partial class PlayerHitBox : Node
 {
-	private Area2D _hitbox;
-	private CollisionShape2D _shape;
+	private CollisionShape2D _shapeRight;
+	private CollisionShape2D _shapeLeft;
 	private PlayerDetails _details;
-	private Vector2 _baseShapePosition;
 
-	public void Setup(Area2D area, CollisionShape2D shape, PlayerDetails details)
+	public void Setup(CollisionShape2D shapeRight, CollisionShape2D shapeLeft, PlayerDetails details)
 	{
-		_hitbox = area;
-		_shape = shape;
+		_shapeRight = shapeRight;
+		_shapeLeft = shapeLeft;
 		_details = details;
-		_baseShapePosition = shape.Position;
 	}
 
 	public void HandleHitbox()
 	{
-		float sign = _details.HasFrontDirection ? 1f : -1f;
-		_shape.Position = new Vector2(Mathf.Abs(_baseShapePosition.X) * sign, _baseShapePosition.Y);
+		if (_details == null)
+			return;
+
+		if (_details.HasFrontDirection) // gracz patrzy w prawo → wyłącz lewy
+		{
+			_shapeLeft?.SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
+		}
+		else // gracz patrzy w lewo → wyłącz prawy
+		{
+			_shapeRight?.SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
+		}
 	}
 }

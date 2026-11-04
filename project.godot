@@ -24,6 +24,10 @@ window/stretch/aspect="expand"
 
 project/assembly_name="Gra2"
 
+[global_group]
+
+Player=""
+
 [input]
 
 ui_accept={

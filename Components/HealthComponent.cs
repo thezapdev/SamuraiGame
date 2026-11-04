@@ -2,12 +2,12 @@ using Godot;
 
 public partial class HealthComponent : Node
 {
-	[Export] public int _maxHealth = 100; 
+	[Export] public int _maxHealth = 100;
 	private int _currentHealth;
 
 	[Signal] public delegate void HealthChangedEventHandler(int currentHealth, int maxHealth);
 	[Signal] public delegate void DiedEventHandler();
-	
+
 	public override void _Ready()
 	{
 		_currentHealth = _maxHealth;
@@ -15,7 +15,7 @@ public partial class HealthComponent : Node
 
 	public void TakeDamage(int damage)
 	{
-		if (_currentHealth <= 0) return; 
+		if (_currentHealth <= 0) return;
 
 		_currentHealth = Mathf.Clamp(_currentHealth - damage, 0, _maxHealth);
 
