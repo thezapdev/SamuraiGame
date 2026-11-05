@@ -2,23 +2,22 @@ using Godot;
 
 public partial class ExpBar : ProgressBar
 {
-	private PlayerExp _playerExp;
+	[Export] private LevelSystem _levelSystem;
 
 	public override void _Ready()
 	{
-		_playerExp = GetNodeOrNull<PlayerExp>("/root/Node2D/Player/PlayerExp");
 
-		if (_playerExp == null)
+		if (_levelSystem == null)
 		{
-			GD.PrintErr("Nie znaleziono PlayerExp!");
+			GD.PrintErr("Nie znaleziono LevelSystem");
 			return;
 		}
 
-		_playerExp.ExpChanged += UpdateExpBar;
+		_levelSystem.ExpChanged += UpdateExpBar;
 
 		UpdateExpBar(
-			_playerExp.GetCurrentExp(),
-			_playerExp.GetMaxExp()
+			_levelSystem.GetCurrentExp(),
+			_levelSystem.GetMaxExp()
 		);
 	}
 

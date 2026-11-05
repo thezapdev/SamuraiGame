@@ -15,8 +15,19 @@ public partial class LevelSystem : Node
 	[Signal]
 	public delegate void LevelChangedEventHandler(int level);
 
+
+	public override void _Ready()
+	{
+		EmitSignal(SignalName.ExpChanged, CurrentExp, MaxExp);
+	}
+
 	public void AddExp(int amount)
 	{
+		if (amount <= 0)
+			return;
+
+		GD.Print($"Dodano EXP: {amount}");
+
 		CurrentExp += amount;
 
 		while (CurrentExp >= MaxExp)
@@ -38,4 +49,6 @@ public partial class LevelSystem : Node
 
 		EmitSignal(SignalName.LevelChanged, Level);
 	}
+	public int GetCurrentExp() => CurrentExp;
+	public int GetMaxExp() => MaxExp;
 }

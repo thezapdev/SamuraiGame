@@ -19,7 +19,6 @@
 [ext_resource type="Script" uid="uid://l86xiq0ke057" path="res://Components/HealthComponent.cs" id="13_rjqkl"]
 [ext_resource type="Texture2D" uid="uid://o6ryxt2vbf1t" path="res://EnemiesAnimation/Zombie_Default_Idle.png" id="13_ta5nu"]
 [ext_resource type="Script" uid="uid://c2valok12ueqi" path="res://UI/HealthBarUI.cs" id="14_fs4d3"]
-[ext_resource type="Script" uid="uid://biknleq5ehqlq" path="res://Player/PlayerExp.cs" id="15_bjha6"]
 [ext_resource type="Script" uid="uid://b4uk6bqpuxmpv" path="res://Player/PlayerHitBox.cs" id="15_fs4d3"]
 [ext_resource type="Script" uid="uid://c7ptjwu4ki5h0" path="res://Enemies/EnemyCombat.cs" id="21_ei405"]
 [ext_resource type="Script" uid="uid://c85kxpuyc4uja" path="res://Enemies/EnemyMovement.cs" id="22_e8dv2"]
@@ -1018,7 +1017,7 @@ position = Vector2(908.9999, 629.9999)
 shape = SubResource("RectangleShape2D_m671o")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=847359601 node_paths=PackedStringArray("_jumpComponent", "_movementComponent", "_hitboxComponent", "_attack", "_healthComponent") groups=["Player"]]
-position = Vector2(1996, 6)
+position = Vector2(221, 6)
 script = ExtResource("5_rj586")
 _jumpComponent = NodePath("PlayerJumpNode")
 _movementComponent = NodePath("PlayerMovementNode")
@@ -1075,8 +1074,9 @@ script = ExtResource("9_d2bti")
 script = ExtResource("10_ta5nu")
 _speed = 225.0
 
-[node name="PlayerAttack" type="Node" parent="Player" unique_id=184631018]
+[node name="PlayerAttack" type="Node" parent="Player" unique_id=184631018 node_paths=PackedStringArray("_statsManager")]
 script = ExtResource("11_flf07")
+_statsManager = NodePath("../StatsManager")
 
 [node name="PlayerAnimation" type="Node" parent="Player" unique_id=1213533343]
 script = ExtResource("12_k73cj")
@@ -1087,10 +1087,7 @@ script = ExtResource("13_rjqkl")
 [node name="PlayerHitBox" type="Node" parent="Player" unique_id=5212827]
 script = ExtResource("15_fs4d3")
 
-[node name="PlayerExp" type="Node" parent="Player" unique_id=1946532208]
-script = ExtResource("15_bjha6")
-
-[node name="ProgressBar" type="ProgressBar" parent="Player" unique_id=1445106778 node_paths=PackedStringArray("_healthComponent")]
+[node name="HealthUI" type="ProgressBar" parent="Player" unique_id=1445106778 node_paths=PackedStringArray("_healthComponent")]
 offset_left = -231.0
 offset_top = 733.0
 offset_right = -157.0
@@ -1105,6 +1102,9 @@ script = ExtResource("9_4d7sh")
 _healthComponent = NodePath("EnemySprite2D/HealthComponent2")
 ExpReward = 60
 
+[node name="EnemyMovement" type="Node" parent="Enemy" unique_id=684479795]
+script = ExtResource("22_e8dv2")
+
 [node name="EnemySprite2D" type="AnimatedSprite2D" parent="Enemy" unique_id=1720521100]
 position = Vector2(336, 785)
 scale = Vector2(1.2031251, 1.2148441)
@@ -1116,11 +1116,8 @@ script = ExtResource("13_rjqkl")
 _maxHealth = 50
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy" unique_id=944189926]
-position = Vector2(336, 786)
+position = Vector2(335, 787)
 shape = SubResource("RectangleShape2D_sbcm3")
-
-[node name="EnemyMovement" type="Node" parent="Enemy" unique_id=684479795]
-script = ExtResource("22_e8dv2")
 
 [node name="EnemyCombat" type="Node" parent="Enemy" unique_id=928400227]
 script = ExtResource("21_ei405")
@@ -1323,10 +1320,19 @@ show_percentage = false
 script = ExtResource("14_fs4d3")
 _healthComponent = NodePath("../EnemySprite2D/HealthComponent2")
 
-[node name="ExpBar" type="ProgressBar" parent="." unique_id=117527798]
-offset_left = -396.0
-offset_top = 280.0
-offset_right = 379.0
-offset_bottom = 338.0
+[node name="ExpBar" type="ProgressBar" parent="." unique_id=117527798 node_paths=PackedStringArray("_levelSystem")]
+offset_left = -68.0
+offset_top = 514.0
+offset_right = 707.0
+offset_bottom = 572.0
 show_percentage = false
 script = ExtResource("23_e8dv2")
+_levelSystem = NodePath("../Player/LevelSystem")
+
+[node name="Label" type="Label" parent="ExpBar" unique_id=1396352385]
+layout_mode = 0
+offset_top = -35.0
+offset_right = 761.0
+offset_bottom = 2.0
+text = "Player Level Bar"
+horizontal_alignment = 1
