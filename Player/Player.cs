@@ -6,20 +6,18 @@ public partial class Player : CharacterBody2D
 	[Export] private PlayerMovement _movementComponent;
 	[Export] private PlayerHitBox _hitboxComponent;
 	[Export] private PlayerAttack _attack;
-	[Export] private HealthComponent _healthComponent; // MUST be assigned in Inspector!
+	[Export] private HealthComponent _healthComponent;
 
 	private StatsManager _statsmanager;
 	private LevelSystem _levelsystem;
 	private PlayerAnimation _animation;
-	private PlayerExp _expComponent;
-
 	private PlayerDetails _playerDetails = new();
 
 	public override void _Ready()
 	{
 		_levelsystem = GetNode<LevelSystem>("LevelSystem");
 		_statsmanager = GetNode<StatsManager>("StatsManager");
-		_expComponent = GetNode<PlayerExp>("PlayerExp");
+
 
 		_animation = GetNode<PlayerAnimation>("PlayerAnimation");
 		_attack = GetNode<PlayerAttack>("PlayerAttack");
@@ -46,7 +44,7 @@ public partial class Player : CharacterBody2D
 		if (enemy == null)
 			return;
 
-		_expComponent.AddExp(enemy.ExpReward);
+		_levelsystem.AddExp(enemy.ExpReward);
 		GD.Print($"Zdobyto {enemy.ExpReward} EXP!");
 	}
 

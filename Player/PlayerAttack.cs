@@ -2,6 +2,7 @@ using Godot;
 
 public partial class PlayerAttack : Node
 {
+	[Export] private StatsManager _statsManager;
 	private AttackSystem _attacksystem;
 	private CriticalSystem _criticalSystem;
 
@@ -14,12 +15,12 @@ public partial class PlayerAttack : Node
 	private CollisionShape2D _hitboxShape;
 	private CollisionShape2D _hitbox2Shape;
 	private IPlayerDirectionManagement _direction;
-
+	
 	public override void _Ready()
 	{
-		_attacksystem = new AttackSystem(10, 2.5f);
+		_attacksystem = _statsManager.AttackSystem;
 		_attacksystem.UpdateStats(1);
-		_criticalSystem = new CriticalSystem();
+		_criticalSystem = _statsManager.CriticalSystem;
 	}
 
 	public void Setup(CharacterBody2D body, AnimatedSprite2D animatedSprite, Area2D hitbox, Area2D hitbox2,

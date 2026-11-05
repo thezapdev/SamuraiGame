@@ -1,70 +1,60 @@
+
 using Godot;
 
 public partial class EnemyMovement : Node
 {
-	[Export] private float _speed = 180.0f;
-	[Export] private float _gravity = 980.0f;
-	[Export] private float _stopDistance = 20.0f;
-	[Export] private float _detectionRange = 0.0f; // 0 = goni zawsze
-	[Export] private bool _debug = false;
+	[Export] public float Speed = 180.0f;
+	[Export] public float Gravity = 980.0f;
 
-	private CharacterBody2D _body;
-	private Node2D _target;
+	private CharacterBody2D _enemy;
+	private Node2D _player;
 
 	public override void _Ready()
 	{
-		_body = GetParent<CharacterBody2D>();
-		if (_body == null)
+		_enemy = GetParent() as CharacterBody2D;
+
+		if (_enemy == null)
 		{
-			GD.PrintErr($"EnemyMovement [{Name}]: Rodzic nie jest CharacterBody2D!");
+			GD.PrintErr("EnemyMovement: Nie znaleziono Enemy!");
 			return;
 		}
+	}
 
-		_target = GetTree().GetFirstNodeInGroup("Player") as Node2D;
-		if (_target == null)
-		{
-			GD.PrintErr($"EnemyMovement [{Name}]: Nie znaleziono gracza w grupie 'Player'!");
-		}
-		else if (_debug)
-		{
-			GD.Print($"EnemyMovement [{Name}]: Cel znaleziony: {_target.Name}");
-		}
+	public void SetTarget(Node2D target)
+	{
+		_player = target;
 	}
 
 	public void HandleMovement(double delta)
 	{
-		if (_body == null || _target == null)
+		if (_enemy == null || !GodotObject.IsInstanceValid(_player))
 			return;
 
-		Vector2 targetPos = _target.GlobalPosition;
-		Vector2 myPos = _body.GlobalPosition;
+		float enemyX = _enemy.GlobalPosition.X;
+		float playerX = _player.GlobalPosition.X;
 
-		float distX = Mathf.Abs(targetPos.X - myPos.X);
-		float dirX = Mathf.Sign(targetPos.X - myPos.X);
-		float distance = myPos.DistanceTo(targetPos);
+		float differenceX = playerX - enemyX;
+		float direction = Mathf.Sign(differenceX);
 
-		Vector2 velocity = _body.Velocity;
+		Vector2 velocity = _enemy.Velocity;
 
-		bool outOfRange = _detectionRange > 0 && distance > _detectionRange;
+		velocity.X = Mathf.Abs(differenceX) > 5.0f
+			? direction * Speed
+			: 0;
 
-		if (outOfRange || distX <= _stopDistance)
-		{
-			// Stój (hamuj w poziomie)
-			velocity.X = Mathf.MoveToward(velocity.X, 0, _speed);
-		}
+		if (!_enemy.IsOnFloor())
+			velocity.Y += Gravity * (float)delta;
 		else
-		{
-			velocity.X = dirX * _speed;
-		}
+			velocity.Y = 0;
 
-		// Grawitacja
-		if (!_body.IsOnFloor())
-			velocity.Y += _gravity * (float)delta;
+		GD.Print(
+			$"EnemyX: {enemyX:F1} | " +
+			$"PlayerX: {playerX:F1} | " +
+			$"Difference: {differenceX:F1} | " +
+			$"Direction: {direction}"
+		);
 
-		_body.Velocity = velocity;
-		_body.MoveAndSlide();
-
-		if (_debug)
-			GD.Print($"EnemyMovement [{Name}] | distX={distX:F1} vel={_body.Velocity}");
+		_enemy.Velocity = velocity;
+		_enemy.MoveAndSlide();
 	}
 }
