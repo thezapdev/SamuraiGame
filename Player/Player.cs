@@ -1,42 +1,97 @@
+
 using Godot;
 
 public partial class Player : CharacterBody2D
 {
-	[Export] private PlayerJump _jumpComponent;
-	[Export] private PlayerMovement _movementComponent;
-	[Export] private PlayerHitBox _hitboxComponent;
-	[Export] private PlayerAttack _attack;
 	[Export] private HealthComponent _healthComponent;
+	[Export] private PlayerHitBox _hitboxComponent;
 
-	private StatsManager _statsmanager;
-	private LevelSystem _levelsystem;
-	private PlayerAnimation _animation;
-	private PlayerDetails _playerDetails = new();
+	public StateMachine StateMachine { get; private set; }
+	public AnimatedSprite2D Sprite { get; private set; }
+	public Area2D Hitbox { get; private set; }
+	public Area2D Hitbox2 { get; private set; }
+	public CollisionShape2D HitboxShape { get; private set; }
+	public CollisionShape2D Hitbox2Shape { get; private set; }
+	public StatsManager Stats { get; private set; }
+	public PlayerDetails Details { get; } = new();
+
+	public bool FacingRight => Details.HasFrontDirection;
+
+	private LevelSystem _levelSystem;
 
 	public override void _Ready()
 	{
-		_levelsystem = GetNode<LevelSystem>("LevelSystem");
-		_statsmanager = GetNode<StatsManager>("StatsManager");
+		// Gracz wykonuje fizykę po StateMachine.
+		ProcessPhysicsPriority = 1;
 
+		_levelSystem = GetNode<LevelSystem>("LevelSystem");
+		Stats = GetNode<StatsManager>("StatsManager");
+		StateMachine = GetNode<StateMachine>("StateMachine");
 
-		_animation = GetNode<PlayerAnimation>("PlayerAnimation");
-		_attack = GetNode<PlayerAttack>("PlayerAttack");
+		Sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 
-		var sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-		var hitbox = GetNode<Area2D>("Hitbox");
-		var hitbox2 = GetNode<Area2D>("Hitbox2");
-		var hitboxShape = GetNode<CollisionShape2D>("Hitbox/CollisionShape2D");
-		var hitbox2Shape = GetNode<CollisionShape2D>("Hitbox2/CollisionShape2D");
+		Hitbox = GetNode<Area2D>("Hitbox");
+		Hitbox2 = GetNode<Area2D>("Hitbox2");
 
-		_jumpComponent.Setup(this);
-		_movementComponent.Setup(this, _playerDetails);
-		_attack.Setup(this, sprite, hitbox, hitbox2, hitboxShape, hitbox2Shape, _playerDetails);
-		_animation.Setup(this, sprite, _attack);
+		HitboxShape = GetNode<CollisionShape2D>(
+			"Hitbox/CollisionShape2D"
+		);
+
+		Hitbox2Shape = GetNode<CollisionShape2D>(
+			"Hitbox2/CollisionShape2D"
+		);
+
+		HitboxShape.SetDeferred(
+			CollisionShape2D.PropertyName.Disabled, true
+		);
+
+		Hitbox2Shape.SetDeferred(
+			CollisionShape2D.PropertyName.Disabled, true
+		);
 
 		if (_hitboxComponent != null)
-			_hitboxComponent.Setup(hitboxShape, hitbox2Shape, _playerDetails);
+		{
+			_hitboxComponent.Setup(
+				HitboxShape,
+				Hitbox2Shape,
+				Details
+			);
+		}
 
-		GD.Print($"Player._Ready: _healthComponent = {_healthComponent?.Name ?? "NULL"}");
+		GD.Print($"Player initialized. MoveSpeed: {Stats.MoveSpeed}");
+	}
+
+	public override void _PhysicsProcess(double delta)
+	{
+		MoveAndSlide();
+
+		_hitboxComponent?.HandleHitbox();
+	}
+
+	public void ApplyGravity(double delta)
+	{
+		if (!IsOnFloor())
+		{
+			Velocity += GetGravity() * (float)delta;
+		}
+	}
+
+	public float GetInputDirection()
+	{
+		return Input.GetAxis("move_left", "move_right");
+	}
+
+	public void FaceDirection(float dir)
+	{
+		if (dir == 0)
+			return;
+
+		if (dir > 0)
+			Details.SetFrontDirection();
+		else
+			Details.SetBackDirection();
+
+		Sprite.FlipH = !FacingRight;
 	}
 
 	public void KillEnemy(Enemy enemy)
@@ -44,45 +99,35 @@ public partial class Player : CharacterBody2D
 		if (enemy == null)
 			return;
 
-		_levelsystem.AddExp(enemy.ExpReward);
+		_levelSystem.AddExp(enemy.ExpReward);
+
 		GD.Print($"Zdobyto {enemy.ExpReward} EXP!");
 	}
 
 	public void TakeDamage(int damage)
 	{
-		GD.Print($"Player.TakeDamage({damage}) called");
-
 		if (_healthComponent == null)
 		{
-			GD.PrintErr("Player: Brak HealthComponent przypisanego w inspektorze!");
+			GD.PrintErr("Player: Brak HealthComponent!");
 			return;
 		}
 
 		_healthComponent.TakeDamage(damage);
-		GD.Print($"Gracz otrzymał {damage} obrażeń! HP: {_healthComponent.GetCurrentHealth()}/{_healthComponent.GetMaxHealth()}");
-	}
 
-	public override void _PhysicsProcess(double delta)
-	{
-		if (!IsOnFloor())
-			Velocity += GetGravity() * (float)delta;
-
-		_movementComponent.HandleMovement(delta);
-		_jumpComponent.HandleJump(delta);
-		_attack.HandleAttack();
-
-		MoveAndSlide();
-		_animation.UpdateAnimation();
-
-		_hitboxComponent?.HandleHitbox();
+		GD.Print(
+			$"Gracz otrzymał {damage} obrażeń! " +
+			$"HP: {_healthComponent.GetCurrentHealth()}/" +
+			$"{_healthComponent.GetMaxHealth()}"
+		);
 	}
 }
 
 public interface IPlayerDirectionManagement
 {
 	bool HasFrontDirection { get; }
-	public void SetFrontDirection();
-	public void SetBackDirection();
+
+	void SetFrontDirection();
+	void SetBackDirection();
 }
 
 public class PlayerDetails : IPlayerDirectionManagement
@@ -90,5 +135,6 @@ public class PlayerDetails : IPlayerDirectionManagement
 	public bool HasFrontDirection { get; private set; } = true;
 
 	public void SetFrontDirection() => HasFrontDirection = true;
+
 	public void SetBackDirection() => HasFrontDirection = false;
 }

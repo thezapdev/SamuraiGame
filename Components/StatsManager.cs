@@ -2,10 +2,12 @@ using Godot;
 
 public partial class StatsManager : Node
 {
+	[Export] public float MoveSpeed { get; set; } = 200f;
 	[Export] public int CurrentLevel { get; private set; } = 1;
 	public AttackSystem AttackSystem { get; private set; }
 	public CriticalSystem CriticalSystem { get; private set; }
 	public DefenseSystem DefenseSystem { get; private set; }
+
 
 	public override void _Ready()
 	{
