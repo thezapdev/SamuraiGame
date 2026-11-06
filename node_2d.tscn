@@ -20,11 +20,14 @@
 [ext_resource type="Texture2D" uid="uid://o6ryxt2vbf1t" path="res://EnemiesAnimation/Zombie_Default_Idle.png" id="13_ta5nu"]
 [ext_resource type="Script" uid="uid://c2valok12ueqi" path="res://UI/HealthBarUI.cs" id="14_fs4d3"]
 [ext_resource type="Script" uid="uid://b4uk6bqpuxmpv" path="res://Player/PlayerHitBox.cs" id="15_fs4d3"]
+[ext_resource type="Script" uid="uid://c41pccb05bh8e" path="res://Player/IdleState.cs" id="19_ebxd8"]
+[ext_resource type="Script" uid="uid://qf2837vqky1g" path="res://Player/RunState.cs" id="20_2u7jv"]
 [ext_resource type="Script" uid="uid://c7ptjwu4ki5h0" path="res://Enemies/EnemyCombat.cs" id="21_ei405"]
 [ext_resource type="Script" uid="uid://c85kxpuyc4uja" path="res://Enemies/EnemyMovement.cs" id="22_e8dv2"]
 [ext_resource type="Script" uid="uid://bffem44k3pet7" path="res://UI/ExpBar.cs" id="23_e8dv2"]
 [ext_resource type="Script" uid="uid://os8vpadahs8n" path="res://Components/LevelSystem.cs" id="25_gt76g"]
 [ext_resource type="Script" uid="uid://camjs30vr8i46" path="res://Components/StatsManager.cs" id="26_gt76g"]
+[ext_resource type="Script" uid="uid://b2442ybbumjc5" path="res://StateMachine.cs" id="27_2hxjc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0e48y"]
 texture = ExtResource("1_wtcfe")
@@ -1016,14 +1019,21 @@ position = Vector2(-2.9999995, 1.9999998)
 position = Vector2(908.9999, 629.9999)
 shape = SubResource("RectangleShape2D_m671o")
 
-[node name="Player" type="CharacterBody2D" parent="." unique_id=847359601 node_paths=PackedStringArray("_jumpComponent", "_movementComponent", "_hitboxComponent", "_attack", "_healthComponent") groups=["Player"]]
+[node name="Player" type="CharacterBody2D" parent="." unique_id=847359601 node_paths=PackedStringArray("_healthComponent", "_hitboxComponent") groups=["Player"]]
 position = Vector2(221, 6)
 script = ExtResource("5_rj586")
-_jumpComponent = NodePath("PlayerJumpNode")
-_movementComponent = NodePath("PlayerMovementNode")
-_hitboxComponent = NodePath("PlayerHitBox")
-_attack = NodePath("PlayerAttack")
 _healthComponent = NodePath("HealthComponent")
+_hitboxComponent = NodePath("PlayerHitBox")
+
+[node name="StateMachine" type="Node" parent="Player" unique_id=1860074126 node_paths=PackedStringArray("InitialState")]
+script = ExtResource("27_2hxjc")
+InitialState = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="Player/StateMachine" unique_id=2141785296]
+script = ExtResource("19_ebxd8")
+
+[node name="Run" type="Node" parent="Player/StateMachine" unique_id=116397668]
+script = ExtResource("20_2u7jv")
 
 [node name="StatsManager" type="Node" parent="Player" unique_id=807471342]
 script = ExtResource("26_gt76g")
