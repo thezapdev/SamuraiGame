@@ -11,6 +11,9 @@ public partial class IdleState : PlayerState
 
 	public override void PhysicsUpdate(double delta)
 	{
+		if (TryAttack())
+			return;
+
 		Player.ApplyGravity(delta);
 
 		float direction = Player.GetInputDirection();

@@ -10,13 +10,21 @@ public partial class State : Node
 	);
 
 	public virtual void Enter() { }
+
 	public virtual void Exit() { }
+
 	public virtual void HandleInput(InputEvent @event) { }
+
 	public virtual void Update(double delta) { }
+
 	public virtual void PhysicsUpdate(double delta) { }
 
 	protected void ChangeState(string name)
 	{
-		EmitSignal(SignalName.TransitionRequested, this, name);
+		EmitSignal(
+			SignalName.TransitionRequested,
+			this,
+			name
+		);
 	}
 }
