@@ -10,7 +10,18 @@ public partial class RunState : PlayerState
 
     public override void PhysicsUpdate(double delta)
     {
+        if (TryAttack())
+            return;
+
+        Player.ApplyGravity(delta);
+
         float direction = Player.GetInputDirection();
+
+        if (direction == 0)
+        {
+            ChangeState("Idle");
+            return;
+        }
 
         Player.FaceDirection(direction);
 
@@ -19,29 +30,7 @@ public partial class RunState : PlayerState
             Player.Velocity.Y
         );
 
-        Player.ApplyGravity(delta);
-
-        if (!Player.IsOnFloor())
-        {
-            ChangeState("Fall");
-            return;
-        }
-
         if (Input.IsActionJustPressed("jump"))
-        {
             ChangeState("Jump");
-            return;
-        }
-
-        if (direction == 0)
-        {
-            ChangeState("Idle");
-            return;
-        }
-    }
-
-    public override void Exit()
-    {
-        // Bez dodatkowych zmian.
     }
 }

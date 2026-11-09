@@ -47,12 +47,9 @@ public partial class EnemyMovement : Node
 		else
 			velocity.Y = 0;
 
-		GD.Print(
-			$"EnemyX: {enemyX:F1} | " +
-			$"PlayerX: {playerX:F1} | " +
-			$"Difference: {differenceX:F1} | " +
-			$"Direction: {direction}"
-		);
+		
+			
+		
 
 		_enemy.Velocity = velocity;
 		_enemy.MoveAndSlide();

@@ -7,16 +7,20 @@ public partial class PlayerState : State
 
 	public override void _Ready()
 	{
-		Player = GetParent() as Player
-			?? GetParent()?.GetParent() as Player;
+		Player = GetParent().GetParent() as Player;
 
 		if (Player == null)
+			GD.PushError($"{Name}: nie znaleziono Playera");
+	}
+
+	protected bool TryAttack()
+	{
+		if (Input.IsActionJustPressed("Attack"))
 		{
-			GD.PushError(
-				$"{Name}: Nie znaleziono Player. " +
-				$"Rodzic: {GetParent()?.Name}, " +
-				$"rodzic rodzica: {GetParent()?.GetParent()?.Name}"
-			);
+			ChangeState("Attack");
+			return true;
 		}
+
+		return false;
 	}
 }

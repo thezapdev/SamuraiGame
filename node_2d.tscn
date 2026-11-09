@@ -9,13 +9,14 @@
 [ext_resource type="Texture2D" uid="uid://df0gpxmkpigrf" path="res://PlayerAnimation/Sprites/IDLE.png" id="6_rj586"]
 [ext_resource type="Texture2D" uid="uid://bnltmpk1r8gbr" path="res://PlayerAnimation/Sprites/RUN.png" id="7_4d7sh"]
 [ext_resource type="Script" uid="uid://by7utoylf3yl5" path="res://Enemies/Enemy.cs" id="9_4d7sh"]
-[ext_resource type="Script" uid="uid://cmrgqv0r3dcsj" path="res://Player/PlayerJump.cs" id="9_d2bti"]
+[ext_resource type="Script" uid="uid://bnp828g26l6ck" path="res://Player/AttackState.cs" id="9_kq1c5"]
 [ext_resource type="Texture2D" uid="uid://8fmc4nn524sf" path="res://EnemiesAnimation/Zombie_Default_Attack1.png" id="10_0h7mo"]
-[ext_resource type="Script" uid="uid://cspm5rhvsex6q" path="res://Player/PlayerMovement.cs" id="10_ta5nu"]
-[ext_resource type="Script" uid="uid://c8jrvh3w8hmnm" path="res://Player/PlayerAttack.cs" id="11_flf07"]
+[ext_resource type="Script" uid="uid://2ppfyepxnlci" path="res://Player/JumpState.cs" id="10_ornx7"]
+[ext_resource type="Script" uid="uid://vuff0145eiti" path="res://Player/DeadState.cs" id="11_cnnru"]
 [ext_resource type="Texture2D" uid="uid://c1j0nwxstm75e" path="res://EnemiesAnimation/Zombie_Default_Dead.png" id="11_nr8wp"]
+[ext_resource type="Script" uid="uid://cnlyl8i8qynth" path="res://Player/HurtState.cs" id="12_540hr"]
 [ext_resource type="Texture2D" uid="uid://fqppawtjsduy" path="res://EnemiesAnimation/Zombie_Default_Hurt.png" id="12_d2bti"]
-[ext_resource type="Script" uid="uid://kek4t3t1icxc" path="res://Player/PlayerAnimation.cs" id="12_k73cj"]
+[ext_resource type="Script" uid="uid://cvijkt83d4sj1" path="res://Player/FallState.cs" id="13_6ip5v"]
 [ext_resource type="Script" uid="uid://l86xiq0ke057" path="res://Components/HealthComponent.cs" id="13_rjqkl"]
 [ext_resource type="Texture2D" uid="uid://o6ryxt2vbf1t" path="res://EnemiesAnimation/Zombie_Default_Idle.png" id="13_ta5nu"]
 [ext_resource type="Script" uid="uid://c2valok12ueqi" path="res://UI/HealthBarUI.cs" id="14_fs4d3"]
@@ -1035,13 +1036,27 @@ script = ExtResource("19_ebxd8")
 [node name="Run" type="Node" parent="Player/StateMachine" unique_id=116397668]
 script = ExtResource("20_2u7jv")
 
+[node name="Attack" type="Node" parent="Player/StateMachine" unique_id=163316355]
+script = ExtResource("9_kq1c5")
+
+[node name="Jump" type="Node" parent="Player/StateMachine" unique_id=702035692]
+script = ExtResource("10_ornx7")
+
+[node name="Dead" type="Node" parent="Player/StateMachine" unique_id=103641632]
+script = ExtResource("11_cnnru")
+
+[node name="Hurt" type="Node" parent="Player/StateMachine" unique_id=131965589]
+script = ExtResource("12_540hr")
+
+[node name="Fall" type="Node" parent="Player/StateMachine" unique_id=510501095]
+script = ExtResource("13_6ip5v")
+
 [node name="StatsManager" type="Node" parent="Player" unique_id=807471342]
 script = ExtResource("26_gt76g")
 
-[node name="LevelSystem" type="Node" parent="Player" unique_id=1660891438 node_paths=PackedStringArray("_statManager", "_attackPlayer")]
+[node name="LevelSystem" type="Node" parent="Player" unique_id=1660891438 node_paths=PackedStringArray("_statManager")]
 script = ExtResource("25_gt76g")
 _statManager = NodePath("../StatsManager")
-_attackPlayer = NodePath("../PlayerAttack")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=2025178200]
 position = Vector2(-196, 765)
@@ -1076,20 +1091,6 @@ limit_enabled = false
 position_smoothing_speed = 10.0
 rotation_smoothing_enabled = true
 rotation_smoothing_speed = 10.0
-
-[node name="PlayerJumpNode" type="Node" parent="Player" unique_id=1833218871]
-script = ExtResource("9_d2bti")
-
-[node name="PlayerMovementNode" type="Node" parent="Player" unique_id=44183920]
-script = ExtResource("10_ta5nu")
-_speed = 225.0
-
-[node name="PlayerAttack" type="Node" parent="Player" unique_id=184631018 node_paths=PackedStringArray("_statsManager")]
-script = ExtResource("11_flf07")
-_statsManager = NodePath("../StatsManager")
-
-[node name="PlayerAnimation" type="Node" parent="Player" unique_id=1213533343]
-script = ExtResource("12_k73cj")
 
 [node name="HealthComponent" type="Node" parent="Player" unique_id=1568400900]
 script = ExtResource("13_rjqkl")

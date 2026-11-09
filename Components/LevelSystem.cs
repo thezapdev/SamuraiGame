@@ -7,14 +7,12 @@ public partial class LevelSystem : Node
 	public int MaxExp { get; private set; } = 100;
 
 	[Export] private StatsManager _statManager;
-	[Export] private PlayerAttack _attackPlayer;
 
 	[Signal]
 	public delegate void ExpChangedEventHandler(int current, int max);
 
 	[Signal]
 	public delegate void LevelChangedEventHandler(int level);
-
 
 	public override void _Ready()
 	{
@@ -45,10 +43,10 @@ public partial class LevelSystem : Node
 		MaxExp = (int)(MaxExp * 1.2f);
 
 		_statManager.LevelUp();
-		_attackPlayer.OnLevelChanged(Level);
 
 		EmitSignal(SignalName.LevelChanged, Level);
 	}
+
 	public int GetCurrentExp() => CurrentExp;
 	public int GetMaxExp() => MaxExp;
 }

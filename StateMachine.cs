@@ -4,7 +4,8 @@ using Godot;
 
 public partial class StateMachine : Node
 {
-	[Export] public State InitialState;
+	[Export]
+	public State InitialState;
 
 	public State CurrentState { get; private set; }
 
@@ -12,44 +13,34 @@ public partial class StateMachine : Node
 
 	public override async void _Ready()
 	{
-		// StateMachine wykonuje fizykę przed Player.
-		ProcessPhysicsPriority = -1;
-
-		_states.Clear();
-
 		foreach (Node child in GetChildren())
 		{
 			if (child is State state)
 			{
-				string stateName = state.Name.ToString();
-
-				_states[stateName] = state;
+				_states[state.Name.ToString()] = state;
 
 				state.TransitionRequested += OnTransitionRequested;
 			}
 		}
 
+		GD.Print(
+			"Dostępne stany: " +
+			string.Join(", ", _states.Keys)
+		);
+
 		if (InitialState == null)
 		{
-			GD.PushError("StateMachine: Nie ustawiono InitialState!");
-			return;
-		}
-
-		if (!_states.ContainsKey(InitialState.Name.ToString()))
-		{
-			GD.PushError("StateMachine: InitialState nie jest dzieckiem StateMachine!");
+			GD.PushError("StateMachine: nie ustawiono InitialState!");
 			return;
 		}
 
 		await ToSignal(GetParent(), Node.SignalName.Ready);
 
-		if (!IsInsideTree())
-			return;
-
 		CurrentState = InitialState;
-		CurrentState.Enter();
 
-		GD.Print($"StateMachine: rozpoczęto {CurrentState.Name}");
+		GD.Print($"Początkowy stan: {CurrentState.Name}");
+
+		CurrentState.Enter();
 	}
 
 	public override void _UnhandledInput(InputEvent e)
@@ -67,7 +58,9 @@ public partial class StateMachine : Node
 		CurrentState?.PhysicsUpdate(delta);
 	}
 
-	private void OnTransitionRequested(State from, string newState)
+	private void OnTransitionRequested(
+		State from,
+		string newState)
 	{
 		if (from != CurrentState)
 			return;
@@ -84,14 +77,19 @@ public partial class StateMachine : Node
 	{
 		if (!_states.TryGetValue(newState, out State next))
 		{
-			GD.PushError($"StateMachine: Nie znaleziono stanu '{newState}'!");
+			GD.PushError(
+				$"StateMachine: brak stanu '{newState}'!"
+			);
+
 			return;
 		}
 
 		if (next == CurrentState)
 			return;
 
-		GD.Print($"StateMachine: {CurrentState?.Name} -> {next.Name}");
+		GD.Print(
+			$"Zmiana stanu: {CurrentState?.Name} -> {next.Name}"
+		);
 
 		CurrentState?.Exit();
 
