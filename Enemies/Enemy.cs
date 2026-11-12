@@ -1,58 +1,49 @@
-
 using Godot;
 
 public partial class Enemy : CharacterBody2D
 {
 	[Export] private HealthComponent _healthComponent;
+	[Export] public EnemyMovement Movement;
+	[Export] public EnemyCombat Combat;
+	[Export] public StateMachine StateMachine;
 
-	[ExportGroup("Movement")]
-	[Export] public float Speed = 180.0f;
-	[Export] public float Gravity = 980.0f;
+	[ExportGroup("AI")]
+	[Export] public float DetectionRange = 400f;
 
 	[ExportGroup("Rewards")]
 	[Export] public int ExpReward = 25;
 
-	[Export] public CharacterBody2D TargetToChase;
-
-	private bool _isDead = false;
-	private AnimatedSprite2D _enemySprite;
-	private Player _player;
-	[Export] private EnemyMovement _enemyMovement;
+	public AnimatedSprite2D Sprite { get; private set; }
+	public Player Player { get; private set; }
 
 	public override void _Ready()
 	{
-		_enemySprite = GetNode<AnimatedSprite2D>("EnemySprite2D");
-		_enemyMovement = GetNode<EnemyMovement>("EnemyMovement");
+		Sprite = GetNode<AnimatedSprite2D>("EnemySprite2D");
+		Movement ??= GetNode<EnemyMovement>("EnemyMovement");
+		Combat ??= GetNode<EnemyCombat>("EnemyCombat");
+		StateMachine ??= GetNode<StateMachine>("StateMachine");
 
-		// Pobieranie gracza
-		_player = GetTree().GetFirstNodeInGroup("Player") as Player;
+		Player = GetTree().GetFirstNodeInGroup("Player") as Player;
+		if (Player == null) GD.PrintErr("Enemy: Nie znaleziono Player!");
 
-		if (_player == null)
-			GD.PrintErr("Enemy: Nie znaleziono Player!");
-		_enemyMovement.SetTarget(_player);
-		if (TargetToChase == null)
-		{
-			TargetToChase = _player as CharacterBody2D;
-		}
-
-		// Podłączanie HealthComponent
 		if (_healthComponent != null)
 		{
 			_healthComponent.Died += OnDied;
 			_healthComponent.HealthChanged += OnHealthChanged;
 		}
+		if (Player != null)
+			AddCollisionExceptionWith(Player);
 	}
-
 	public override void _PhysicsProcess(double delta)
 	{
-		if (_isDead)
+		if (IsDead || !GodotObject.IsInstanceValid(Player))
 			return;
 
-		_enemyMovement.HandleMovement(delta);
+		Movement.MoveTowards(Player.GlobalPosition.X);
+		FaceTarget();
+		Movement.Move(delta); // jedyny MoveAndSlide
+		GD.Print($"vel.X={Velocity.X:F0} real.X={GetRealVelocity().X:F0} wall={IsOnWall()}");
 	}
-
-
-
 	public override void _ExitTree()
 	{
 		if (_healthComponent != null)
@@ -62,47 +53,30 @@ public partial class Enemy : CharacterBody2D
 		}
 	}
 
+	public bool IsDead => StateMachine.Current is EnemyDead;
+
+	public bool IsPlayerInDetectionRange()
+		=> GodotObject.IsInstanceValid(Player)
+			&& GlobalPosition.DistanceTo(Player.GlobalPosition) <= DetectionRange;
+
+	public void FaceTarget()
+	{
+		if (!GodotObject.IsInstanceValid(Player)) return;
+		Sprite.FlipH = Player.GlobalPosition.X < GlobalPosition.X;
+	}
+
 	public void TakeDamage(int damage)
 	{
-		if (_isDead)
-			return;
-
+		if (IsDead) return;
 		_healthComponent?.TakeDamage(damage);
 	}
 
-	private void OnHealthChanged(int currentHealth, int maxHealth)
+	private void OnHealthChanged(int current, int max)
 	{
-		if (_isDead)
-			return;
-
-		if (currentHealth > 0)
-		{
-			_enemySprite.Play("Hurt");
-			GD.Print($"Enemy hp: {currentHealth}/{maxHealth}");
-		}
+		if (IsDead || current <= 0) return;
+		StateMachine.ForceTransition("Hurt");
 	}
 
-	private async void OnDied()
-	{
-		if (_isDead)
-			return;
+	private void OnDied() => StateMachine.ForceTransition("Dead");
 
-		_isDead = true;
-
-		SetPhysicsProcess(false);
-
-		_player?.KillEnemy(this);
-
-		_enemySprite.Play("Dead");
-
-		GetNode<CollisionShape2D>("CollisionShape2D")
-			.SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
-
-		await ToSignal(
-			_enemySprite,
-			AnimatedSprite2D.SignalName.AnimationFinished
-		);
-
-		QueueFree();
-	}
 }

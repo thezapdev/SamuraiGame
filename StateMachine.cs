@@ -1,100 +1,62 @@
-
-using System.Collections.Generic;
 using Godot;
+using System.Collections.Generic;
 
 public partial class StateMachine : Node
 {
-	[Export]
-	public State InitialState;
+	[Export] public State InitialState;
 
-	public State CurrentState { get; private set; }
-
+	public State Current { get; private set; }
 	private readonly Dictionary<string, State> _states = new();
 
-	public override async void _Ready()
+	public override void _Ready()
 	{
-		foreach (Node child in GetChildren())
+		foreach (var child in GetChildren())
 		{
 			if (child is State state)
 			{
-				_states[state.Name.ToString()] = state;
-
-				state.TransitionRequested += OnTransitionRequested;
+				_states[state.Name] = state;
+				state.Transitioned += OnTransitioned;
 			}
 		}
 
-		GD.Print(
-			"Dostępne stany: " +
-			string.Join(", ", _states.Keys)
-		);
-
-		if (InitialState == null)
-		{
-			GD.PushError("StateMachine: nie ustawiono InitialState!");
-			return;
-		}
-
-		await ToSignal(GetParent(), Node.SignalName.Ready);
-
-		CurrentState = InitialState;
-
-		GD.Print($"Początkowy stan: {CurrentState.Name}");
-
-		CurrentState.Enter();
+		CallDeferred(nameof(Start));
 	}
 
-	public override void _UnhandledInput(InputEvent e)
+	private void Start()
 	{
-		CurrentState?.HandleInput(e);
+		Current = InitialState;
+		GD.Print($"StateMachine start, Initial = {InitialState?.Name}");
+		Current?.Enter();
 	}
 
-	public override void _Process(double delta)
-	{
-		CurrentState?.Update(delta);
-	}
-
+	public override void _Process(double delta) => Current?.Update(delta);
 	public override void _PhysicsProcess(double delta)
 	{
-		CurrentState?.PhysicsUpdate(delta);
+		Current?.PhysicsUpdate(delta);
+
+
 	}
 
-	private void OnTransitionRequested(
-		State from,
-		string newState)
+	private void OnTransitioned(State from, string newStateName)
 	{
-		if (from != CurrentState)
-			return;
-
-		TransitionTo(newState);
+		if (from != Current) return;
+		SwitchTo(newStateName);
 	}
 
-	public void ForceTransition(string newState)
-	{
-		TransitionTo(newState);
-	}
+	public void ForceTransition(string newStateName) => SwitchTo(newStateName);
 
-	private void TransitionTo(string newState)
+	private void SwitchTo(string name)
 	{
-		if (!_states.TryGetValue(newState, out State next))
+		if (!_states.TryGetValue(name, out var next))
 		{
-			GD.PushError(
-				$"StateMachine: brak stanu '{newState}'!"
-			);
-
+			GD.PushError($"StateMachine: brak stanu {name}");
 			return;
 		}
+		if (Current == next) return;
 
-		if (next == CurrentState)
-			return;
-
-		GD.Print(
-			$"Zmiana stanu: {CurrentState?.Name} -> {next.Name}"
-		);
-
-		CurrentState?.Exit();
-
-		CurrentState = next;
-
-		CurrentState.Enter();
+		Current?.Exit();
+		Current = next;
+		Current.Enter();
 	}
+
 }
