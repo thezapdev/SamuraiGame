@@ -2,110 +2,77 @@ using Godot;
 
 public partial class EnemyCombat : Node
 {
+	[Signal] public delegate void AttackFinishedEventHandler();
+
 	[Export] private int _damage = 10;
 	[Export] private float _attackCooldown = 1.5f;
-	[Export] private float _attackWindup = 0.5f; // czas trwania animacji ataku
+	[Export] private float _attackWindup = 0.5f;
 
 	private Area2D _hitboxArea;
-	private Timer _attackTimer;
 	private AnimatedSprite2D _enemySprite;
-	private bool _canAttack = true;
 	private Node2D _target;
 
-	private bool _isWindingUp = false;
-	private float _windupTimeLeft = 0f;
+	private bool _isAttacking;
+	private double _cooldownLeft;
+
+	public bool IsAttacking => _isAttacking;
 
 	public override void _Ready()
 	{
 		var parent = GetParent();
-		if (parent != null)
-		{
-			_hitboxArea = parent.GetNodeOrNull<Area2D>("HitboxArea");
-			_attackTimer = parent.GetNodeOrNull<Timer>("AttackTimer");
-			_enemySprite = parent.GetNodeOrNull<AnimatedSprite2D>("EnemySprite2D");
-		}
-
-		if (_attackTimer != null)
-		{
-			_attackTimer.WaitTime = _attackCooldown;
-			_attackTimer.OneShot = true;
-			_attackTimer.Timeout += OnCooldownFinished;
-		}
-
+		_hitboxArea = parent.GetNodeOrNull<Area2D>("HitboxArea");
+		_enemySprite = parent.GetNodeOrNull<AnimatedSprite2D>("EnemySprite2D");
 		_target = GetTree().GetFirstNodeInGroup("Player") as Node2D;
 	}
 
-	public override void _PhysicsProcess(double delta)
+	public override void _Process(double delta)
 	{
-		if (_target == null)
-		{
-			_target = GetTree().GetFirstNodeInGroup("Player") as Node2D;
+		if (_cooldownLeft > 0)
+			_cooldownLeft -= delta;
+	}
+
+	public bool CanAttack()
+		=> !_isAttacking && _cooldownLeft <= 0 && IsTargetInAttackRange();
+
+	public bool IsTargetInAttackRange()
+	{
+		if (_hitboxArea == null || !GodotObject.IsInstanceValid(_target))
+			return false;
+
+		return _hitboxArea.GetOverlappingBodies().Contains(_target);
+	}
+
+	public async void StartAttack()
+	{
+		if (_isAttacking) return;
+
+		_isAttacking = true;
+		_enemySprite?.Play("Attack");
+
+		await ToSignal(GetTree().CreateTimer(_attackWindup), SceneTreeTimer.SignalName.Timeout);
+
+		// Wróg mógł zginąć albo dostać hurt w trakcie windupu
+		if (!_isAttacking || !IsInstanceValid(this))
 			return;
-		}
 
-		// Jeśli trwa animacja ataku – odliczaj czas
-		if (_isWindingUp)
-		{
-			_windupTimeLeft -= (float)delta;
-			if (_windupTimeLeft <= 0f)
-			{
-				_isWindingUp = false;
+		if (IsTargetInAttackRange())
+			DealDamage();
 
-				// Po zakończeniu animacji sprawdź, czy gracz wciąż w zasięgu
-				if (_hitboxArea != null && IsTargetInAttackRange(_target))
-				{
-					DealDamage(_target);
-				}
-
-				// Uruchom cooldown przed następnym atakiem
-				if (_attackTimer != null)
-					_attackTimer.Start();
-				else
-					_canAttack = true;
-			}
-			return;
-		}
-
-		// Gracz w zasięgu i możemy zacząć atak
-		if (_canAttack && _hitboxArea != null && IsTargetInAttackRange(_target))
-		{
-			StartAttack();
-		}
+		_isAttacking = false;
+		_cooldownLeft = _attackCooldown;
+		EmitSignal(SignalName.AttackFinished);
 	}
 
-	private void StartAttack()
+	// Wołane przez stan Hurt/Dead, gdy atak ma zostać przerwany
+	public void CancelAttack()
 	{
-		_canAttack = false;
-		_isWindingUp = true;
-		_windupTimeLeft = _attackWindup;
-
-		if (_enemySprite != null)
-		{
-			_enemySprite.Play("Attack");
-		}
-
-		GD.Print($"EnemyCombat: Atak trwa {_attackWindup}s – gracz może uciec!");
+		_isAttacking = false;
+		_cooldownLeft = _attackCooldown;
 	}
 
-	private void DealDamage(Node2D target)
+	private void DealDamage()
 	{
-		if (target == null) return;
-
-		if (target.HasMethod("TakeDamage"))
-		{
-			target.Call("TakeDamage", _damage);
-			GD.Print($"Zadano {_damage} obrażeń graczowi!");
-		}
-	}
-
-	private void OnCooldownFinished()
-	{
-		_canAttack = true;
-	}
-
-	public bool IsTargetInAttackRange(Node2D target)
-	{
-		if (_hitboxArea == null || target == null) return false;
-		return _hitboxArea.GetOverlappingBodies().Contains(target);
+		if (_target.HasMethod("TakeDamage"))
+			_target.Call("TakeDamage", _damage);
 	}
 }

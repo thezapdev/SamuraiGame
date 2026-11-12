@@ -1,57 +1,44 @@
-
 using Godot;
 
 public partial class EnemyMovement : Node
 {
-	[Export] public float Speed = 180.0f;
+	[Export] public float Speed = 150.0f;
 	[Export] public float Gravity = 980.0f;
+	[Export] public float TurnThreshold = 8.0f; // min. różnica X, żeby zmienić kierunek
 
-	private CharacterBody2D _enemy;
-	private Node2D _player;
+	public int Direction { get; private set; } = 1;
 
-	public override void _Ready()
+	private CharacterBody2D _body;
+
+	public override void _Ready() => _body = GetParent() as CharacterBody2D;
+
+	[Export] public float StopDistance = 40.0f;
+
+public void MoveTowards(float targetX)
+{
+	float diff = targetX - _body.GlobalPosition.X;
+
+	if (Mathf.Abs(diff) > TurnThreshold)
+		Direction = diff > 0 ? 1 : -1;
+
+	var v = _body.Velocity;
+	v.X = Mathf.Abs(diff) > StopDistance ? Direction * Speed : 0;
+	_body.Velocity = v;
+	GD.Print($"diff={diff:F0} StopDistance={StopDistance}");
+}
+
+	public void Stop()
 	{
-		_enemy = GetParent() as CharacterBody2D;
-
-		if (_enemy == null)
-		{
-			GD.PrintErr("EnemyMovement: Nie znaleziono Enemy!");
-			return;
-		}
+		var v = _body.Velocity;
+		v.X = 0;
+		_body.Velocity = v;
 	}
 
-	public void SetTarget(Node2D target)
+	public void Move(double delta)
 	{
-		_player = target;
-	}
-
-	public void HandleMovement(double delta)
-	{
-		if (_enemy == null || !GodotObject.IsInstanceValid(_player))
-			return;
-
-		float enemyX = _enemy.GlobalPosition.X;
-		float playerX = _player.GlobalPosition.X;
-
-		float differenceX = playerX - enemyX;
-		float direction = Mathf.Sign(differenceX);
-
-		Vector2 velocity = _enemy.Velocity;
-
-		velocity.X = Mathf.Abs(differenceX) > 5.0f
-			? direction * Speed
-			: 0;
-
-		if (!_enemy.IsOnFloor())
-			velocity.Y += Gravity * (float)delta;
-		else
-			velocity.Y = 0;
-
-		
-			
-		
-
-		_enemy.Velocity = velocity;
-		_enemy.MoveAndSlide();
+		var v = _body.Velocity;
+		v.Y = _body.IsOnFloor() ? 0 : v.Y + Gravity * (float)delta;
+		_body.Velocity = v;
+		_body.MoveAndSlide();
 	}
 }
